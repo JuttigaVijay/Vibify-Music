@@ -7,7 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: "https://vibify-music-cw77.onrender.com", // updated backend URL
+        changeOrigin: true,
+        secure: false,
       },
     },
   },

@@ -5,16 +5,18 @@ import AlbumItem from "../components/AlbumItem";
 import SongItem from "../components/SongItem";
 
 const Home = () => {
-  const { songs, albums } = SongData();
+  const { songs = [], albums = [] } = SongData();
+
   return (
     <Layout>
+      {/* Albums Section */}
       <div className="mb-4">
         <h1 className="my-5 font-bold text-2xl">Featured Charts</h1>
         <div className="flex overflow-auto">
           {albums.map((e, i) => (
             <AlbumItem
               key={i}
-              image={e.thumbnail.url}
+              image={e.thumbnail?.url || "/default.jpg"}
               name={e.title}
               desc={e.description}
               id={e._id}
@@ -23,13 +25,16 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Songs Section */}
       <div className="mb-4">
-        <h1 className="my-5 font-bold text-2xl">Today's biggest hits</h1>
+        <h1 className="my-5 font-bold text-2xl">
+          Today's biggest hits
+        </h1>
         <div className="flex overflow-auto">
           {songs.map((e, i) => (
             <SongItem
               key={i}
-              image={e.thumbnail.url}
+              image={e.thumbnail?.url || "/default.jpg"}
               name={e.title}
               desc={e.description}
               id={e._id}
