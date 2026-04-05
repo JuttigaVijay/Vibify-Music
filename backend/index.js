@@ -4,6 +4,11 @@ import connectDb from "./database/db.js";
 import cookieParser from "cookie-parser";
 import cloudinary from "cloudinary";
 import path from "path";
+import cors from "cors";
+app.use(cors({
+  origin: "https://vibify-music-1.onrender.com", 
+  credentials: true
+}));
 
 dotenv.config();
 
@@ -14,6 +19,7 @@ cloudinary.v2.config({
 });
 
 const app = express();
+
 
 // using middlewares
 app.use(express.json());
