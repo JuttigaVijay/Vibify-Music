@@ -4,6 +4,9 @@ import toast from "react-hot-toast";
 
 const SongContext = createContext();
 
+// Hardcoded backend URL
+const BASE_URL = "https://vibify-music-cw77.onrender.com";
+
 export const SongProvider = ({ children }) => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,8 +17,7 @@ export const SongProvider = ({ children }) => {
 
   async function fetchSongs() {
     try {
-      const { data } = await axios.get("/api/song/all");
-
+      const { data } = await axios.get(`${BASE_URL}/api/song/all`);
       setSongs(data);
       setSelectedSong(data[0]._id);
       setIsPlaying(false);
@@ -28,8 +30,7 @@ export const SongProvider = ({ children }) => {
 
   async function fetchSingleSong() {
     try {
-      const { data } = await axios.get("/api/song/single/" + selectedSong);
-
+      const { data } = await axios.get(`${BASE_URL}/api/song/single/${selectedSong}`);
       setSong(data);
     } catch (error) {
       console.log(error);
@@ -39,7 +40,7 @@ export const SongProvider = ({ children }) => {
   async function addAlbum(formData, setTitle, setDescription, setFile) {
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/song/album/new", formData);
+      const { data } = await axios.post(`${BASE_URL}/api/song/album/new`, formData);
       toast.success(data.message);
       setLoading(false);
       fetchAlbums();
@@ -62,7 +63,7 @@ export const SongProvider = ({ children }) => {
   ) {
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/song/new", formData);
+      const { data } = await axios.post(`${BASE_URL}/api/song/new`, formData);
       toast.success(data.message);
       setLoading(false);
       fetchSongs();
@@ -80,7 +81,7 @@ export const SongProvider = ({ children }) => {
   async function addThumbnail(id, formData, setFile) {
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/song/" + id, formData);
+      const { data } = await axios.post(`${BASE_URL}/api/song/${id}`, formData);
       toast.success(data.message);
       setLoading(false);
       fetchSongs();
@@ -95,8 +96,7 @@ export const SongProvider = ({ children }) => {
 
   async function fetchAlbums() {
     try {
-      const { data } = await axios.get("/api/song/album/all");
-
+      const { data } = await axios.get(`${BASE_URL}/api/song/album/all`);
       setAlbums(data);
     } catch (error) {
       console.log(error);
@@ -105,8 +105,7 @@ export const SongProvider = ({ children }) => {
 
   async function deleteSong(id) {
     try {
-      const { data } = await axios.delete("/api/song/" + id);
-
+      const { data } = await axios.delete(`${BASE_URL}/api/song/${id}`);
       toast.success(data.message);
       fetchSongs();
     } catch (error) {
@@ -130,13 +129,11 @@ export const SongProvider = ({ children }) => {
       setSelectedSong(songs[index + 1]._id);
     }
   }
+
   function prevMusic() {
-    if (index === 0) {
-      return null;
-    } else {
-      setIndex(index - 1);
-      setSelectedSong(songs[index - 1]._id);
-    }
+    if (index === 0) return null;
+    setIndex(index - 1);
+    setSelectedSong(songs[index - 1]._id);
   }
 
   const [albumSong, setAlbumSong] = useState([]);
@@ -144,13 +141,14 @@ export const SongProvider = ({ children }) => {
 
   async function fetchAlbumSong(id) {
     try {
-      const { data } = await axios.get("/api/song/album/" + id);
+      const { data } = await axios.get(`${BASE_URL}/api/song/album/${id}`);
       setAlbumSong(data.songs);
       setAlbumData(data.album);
     } catch (error) {
       console.log(error);
     }
   }
+
   return (
     <SongContext.Provider
       value={{

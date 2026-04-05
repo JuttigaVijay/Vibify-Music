@@ -4,6 +4,9 @@ import toast, { Toaster } from "react-hot-toast";
 
 const UserContext = createContext();
 
+// Hardcoded backend URL
+const BASE_URL = "https://vibify-music-cw77.onrender.com";
+
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
@@ -20,7 +23,7 @@ export const UserProvider = ({ children }) => {
   ) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/user/register", {
+      const { data } = await axios.post(`${BASE_URL}/api/user/register`, {
         name,
         email,
         password,
@@ -34,7 +37,7 @@ export const UserProvider = ({ children }) => {
       fetchSongs();
       fetchAlbums();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Registration failed");
       setBtnLoading(false);
     }
   }
@@ -42,7 +45,7 @@ export const UserProvider = ({ children }) => {
   async function loginUser(email, password, navigate, fetchSongs, fetchAlbums) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/user/login", {
+      const { data } = await axios.post(`${BASE_URL}/api/user/login`, {
         email,
         password,
       });
@@ -55,15 +58,14 @@ export const UserProvider = ({ children }) => {
       fetchSongs();
       fetchAlbums();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Login failed");
       setBtnLoading(false);
     }
   }
 
   async function fetchUser() {
     try {
-      const { data } = await axios.get("/api/user/me");
-
+      const { data } = await axios.get(`${BASE_URL}/api/user/me`);
       setUser(data);
       setIsAuth(true);
       setLoading(false);
@@ -76,28 +78,27 @@ export const UserProvider = ({ children }) => {
 
   async function logoutUser() {
     try {
-      const { data } = await axios.get("/api/user/logout");
-
+      await axios.get(`${BASE_URL}/api/user/logout`);
       window.location.reload();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Logout failed");
     }
   }
 
   async function addToPlaylist(id) {
     try {
-      const { data } = await axios.post("/api/user/song/" + id);
-
+      const { data } = await axios.post(`${BASE_URL}/api/user/song/${id}`);
       toast.success(data.message);
       fetchUser();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to add to playlist");
     }
   }
 
   useEffect(() => {
     fetchUser();
   }, []);
+
   return (
     <UserContext.Provider
       value={{
